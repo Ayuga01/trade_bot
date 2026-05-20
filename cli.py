@@ -43,6 +43,7 @@ def print_order_summary(
     quantity,
     price
 ):
+    print("\n")
     table = Table(title="ORDER REQUEST SUMMARY")
 
     table.add_column("Field")
@@ -60,7 +61,8 @@ def print_order_summary(
 
 
 def print_order_response(response):
-    table = Table(title="ORDER RESPONSE")
+    print("\n")
+    table = Table(title=" === ORDER RESPONSE === ")
 
     table.add_column("Field")
     table.add_column("Value")
