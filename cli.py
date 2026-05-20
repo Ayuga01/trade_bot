@@ -82,7 +82,7 @@ def print_order_summary(
 
 def print_order_response(response):
     print("\n")
-    table = Table(title=" === ORDER RESPONSE === ")
+    table = Table(title="ORDER RESPONSE")
 
     table.add_column("Field")
     table.add_column("Value")
