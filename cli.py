@@ -1,5 +1,8 @@
 import argparse
 
+from rich.console import Console
+from rich.table import Table
+
 from bot.client import BinanceFuturesClient
 from bot.orders import OrderService
 from bot.validators import (
@@ -9,6 +12,7 @@ from bot.validators import (
     validate_price
 )
 
+console = Console()
 
 
 def parse_arguments():
@@ -16,39 +20,72 @@ def parse_arguments():
         description="Binance Futures Testnet Trading Bot"
     )
 
-    parser.add_argument(
-        "--symbol",
-        required=True,
-        help="Trading symbol, e.g. BTCUSDT"
-    )
-
-    parser.add_argument(
-        "--side",
-        required=True,
-        help="BUY or SELL"
-    )
-
-    parser.add_argument(
-        "--type",
-        required=True,
-        help="MARKET or LIMIT"
-    )
-
+    parser.add_argument("--symbol", required=True)
+    parser.add_argument("--side", required=True)
+    parser.add_argument("--type", required=True)
     parser.add_argument(
         "--quantity",
         required=True,
-        type=float,
-        help="Order quantity"
+        type=float
     )
-
     parser.add_argument(
         "--price",
-        type=float,
-        help="Required for LIMIT orders"
+        type=float
     )
 
     return parser.parse_args()
 
+
+def print_order_summary(
+    symbol,
+    side,
+    order_type,
+    quantity,
+    price
+):
+    table = Table(title="ORDER REQUEST SUMMARY")
+
+    table.add_column("Field")
+    table.add_column("Value")
+
+    table.add_row("Symbol", symbol.upper())
+    table.add_row("Side", side)
+    table.add_row("Order Type", order_type)
+    table.add_row("Quantity", str(quantity))
+
+    if price is not None:
+        table.add_row("Price", str(price))
+
+    console.print(table)
+
+
+def print_order_response(response):
+    table = Table(title="ORDER RESPONSE")
+
+    table.add_column("Field")
+    table.add_column("Value")
+
+    table.add_row(
+        "Order ID",
+        str(response.get("orderId"))
+    )
+
+    table.add_row(
+        "Status",
+        str(response.get("status"))
+    )
+
+    table.add_row(
+        "Executed Qty",
+        str(response.get("executedQty"))
+    )
+
+    table.add_row(
+        "Avg Price",
+        str(response.get("avgPrice"))
+    )
+
+    console.print(table)
 
 
 def main():
@@ -58,16 +95,18 @@ def main():
         side = validate_side(args.side)
         order_type = validate_order_type(args.type)
         quantity = validate_quantity(args.quantity)
-        price = validate_price(args.price, order_type)
+        price = validate_price(
+            args.price,
+            order_type
+        )
 
-        print("\n=== ORDER REQUEST SUMMARY ===")
-        print(f"Symbol     : {args.symbol.upper()}")
-        print(f"Side       : {side}")
-        print(f"Order Type : {order_type}")
-        print(f"Quantity   : {quantity}")
-
-        if price:
-            print(f"Price      : {price}")
+        print_order_summary(
+            args.symbol,
+            side,
+            order_type,
+            quantity,
+            price
+        )
 
         client = BinanceFuturesClient().get_client()
 
@@ -81,16 +120,21 @@ def main():
             price=price
         )
 
-        print("\n=== ORDER RESPONSE ===")
-        print(f"Order ID     : {response.get('orderId')}")
-        print(f"Status       : {response.get('status')}")
-        print(f"Executed Qty : {response.get('executedQty')}")
-        print(f"Avg Price    : {response.get('avgPrice')}")
+        print_order_response(response)
 
-        print("\nOrder placed successfully.")
+        console.print(
+            "\n[bold green]✓ Order placed successfully[/bold green]"
+        )
+
+    except ValueError as e:
+        console.print(
+            f"\n[bold red]Validation Error:[/bold red] {e}"
+        )
 
     except Exception as e:
-        print(f"\nError: {str(e)}")
+        console.print(
+            f"\n[bold red]Error:[/bold red] {e}"
+        )
 
 
 if __name__ == "__main__":
