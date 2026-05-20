@@ -41,7 +41,16 @@ class OrderService:
 
             logger.info(f"Order response: {response}")
 
-            return response
+            order_id = response["orderId"]
+
+            final_response = self.client.futures_get_order(
+                symbol=symbol.upper(),
+                orderId=order_id
+            )
+
+            logger.info(f"Final order status: {final_response}")
+
+            return final_response
 
         except BinanceAPIException as e:
             logger.error(f"Binance API Error: {e.message}")
