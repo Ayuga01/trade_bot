@@ -97,4 +97,4 @@ cli.py               # command line entry point
 - This project is only for Binance Futures Testnet.
 - Market orders usually fill right away.
 - Limit orders may stay open if the price is not reached.
-- This is a demo/assignment project, not a production trading bot.
+- This is a demo/assignment project.
