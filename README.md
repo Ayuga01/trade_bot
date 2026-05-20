@@ -14,9 +14,11 @@ order activity to log files.
 - Validates basic inputs before sending an order
 - Prints the order summary and response
 - Logs requests, responses, and errors
+- Enhanced CLI output using Rich
 
 ## Setup
 
+Python 3.10+ is recommended.
 Install dependencies with `uv`:
 
 ```bash
@@ -59,19 +61,27 @@ uv run cli.py --symbol BTCUSDT --side SELL --type LIMIT --quantity 0.001 --price
 ## Example Output
 
 ```text
-=== ORDER REQUEST SUMMARY ===
-Symbol     : BTCUSDT
-Side       : BUY
-Order Type : MARKET
-Quantity   : 0.001
+ ORDER REQUEST SUMMARY
+┏━━━━━━━━━━━━┳━━━━━━━━━┓
+┃ Field      ┃ Value   ┃
+┡━━━━━━━━━━━━╇━━━━━━━━━┩
+│ Symbol     │ BTCUSDT │
+│ Side       │ BUY     │
+│ Order Type │ MARKET  │
+│ Quantity   │ 0.001   │
+└────────────┴─────────┘
 
-=== ORDER RESPONSE ===
-Order ID     : 13167300006
-Status       : FILLED
-Executed Qty : 0.0010
-Avg Price    : 77539.500000
+ ORDER RESPONSE
+┏━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━┓
+┃ Field        ┃ Value        ┃
+┡━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━┩
+│ Order ID     │ 13167474506  │
+│ Status       │ FILLED       │
+│ Executed Qty │ 0.0010       │
+│ Avg Price    │ 77484.800000 │
+└──────────────┴──────────────┘
 
-Order placed successfully.
+✓ Order placed successfully
 ```
 
 ## Logs
