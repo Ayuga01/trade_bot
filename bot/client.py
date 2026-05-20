@@ -15,7 +15,11 @@ class BinanceFuturesClient:
                 "Missing Binance API credentials"
             )
 
-        self.client = Client(api_key, api_secret)
+        self.client = Client(
+            api_key,
+            api_secret,
+            testnet=True
+        )
 
         self.client.FUTURES_URL = (
             "https://testnet.binancefuture.com/fapi"

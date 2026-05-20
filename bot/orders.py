@@ -1,5 +1,6 @@
 from binance.exceptions import BinanceAPIException
 from bot.logging_config import setup_logger
+import time
 
 logger = setup_logger()
 
@@ -38,10 +39,10 @@ class OrderService:
                 params["timeInForce"] = "GTC"
 
             response = self.client.futures_create_order(**params)
-
             logger.info(f"Order response: {response}")
-
             order_id = response["orderId"]
+            
+            time.sleep(1)
 
             final_response = self.client.futures_get_order(
                 symbol=symbol.upper(),
